@@ -64,7 +64,7 @@ The plugin includes analyzer: `pinyin` ,  tokenizer: `pinyin` and  token-filter:
 
 1.Create a index with custom pinyin analyzer
 <pre>
-curl -XPUT http://127.0.0.1:9200/medcl/ 
+curl -XPUT http://127.0.0.1:9200/medcl/ -H 'Content-Type:application/json' -d '
 {
     "index" : {
         "analysis" : {
@@ -86,7 +86,7 @@ curl -XPUT http://127.0.0.1:9200/medcl/
             }
         }
     }
-}
+}'
 </pre>
 
 2.Test Analyzer, analyzing a chinese name, such as 刘德华
