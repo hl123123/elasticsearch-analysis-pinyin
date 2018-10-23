@@ -64,7 +64,7 @@ The plugin includes analyzer: `pinyin` ,  tokenizer: `pinyin` and  token-filter:
 
 1.Create a index with custom pinyin analyzer
 <pre>
-PUT /medcl/ 
+curl -XPUT http://127.0.0.1:9200/medcl/ 
 {
     "index" : {
         "analysis" : {
@@ -91,11 +91,12 @@ PUT /medcl/
 
 2.Test Analyzer, analyzing a chinese name, such as 刘德华
 <pre>
-GET /medcl/_analyze
+curl -XGET http://127.0.0.1:9200/medcl/_analyze -H 'Content-Type:application/json' -d '
 {
   "text": ["刘德华"],
   "analyzer": "pinyin_analyzer"
-}</pre>
+}'
+</pre>
 <pre>
 {
   "tokens" : [
@@ -140,7 +141,7 @@ GET /medcl/_analyze
 
 3.Create mapping
 <pre>
-POST /medcl/folks/_mapping 
+curl -XPOST http://127.0.0.1:9200/medcl/folks/_mapping -H 'Content-Type:application/json' -d '
 {
     "folks": {
         "properties": {
@@ -158,13 +159,15 @@ POST /medcl/folks/_mapping
             }
         }
     }
-}
+}'
 </pre>
 
 4.Indexing
 <pre>
-POST /medcl/folks/andy 
-{"name":"刘德华"}
+POST /medcl/folks/andy -H 'Content-Type:application/json' -d '
+{
+    "name":"刘德华"
+}'
 </pre>
 
 5.Let's search
@@ -178,7 +181,7 @@ curl http://localhost:9200/medcl/folks/_search?q=name.pinyin:de+hua
 
 6.Using Pinyin-TokenFilter
 <pre>
-PUT /medcl1/ 
+curl -XPUT http://127.0.0.1:9200/medcl1/ -H 'Content-Type:application/json' -d '
 {
     "index" : {
         "analysis" : {
@@ -203,16 +206,16 @@ PUT /medcl1/
             }
         }
     }
-}
+}'
 </pre>
 
 Token Test:刘德华 张学友 郭富城 黎明 四大天王
 <pre>
-GET /medcl/_analyze
+curl -XGET http://127.0.0.1:9200/medcl/_analyze -H 'Content-Type:application/json' -d '
 {
   "text": ["刘德华 张学友 郭富城 黎明 四大天王"],
   "analyzer": "user_name_analyzer"
-}
+}'
 </pre>
 <pre>
 {
@@ -260,7 +263,7 @@ GET /medcl/_analyze
 7.Used in phrase query
 - option 1
     <pre>
-    PUT /medcl/
+    curl -XPUT http://127.0.0.1:9200/medcl/ -H 'Content-Type:application/json' -d '
     {
         "index" : {
             "analysis" : {
@@ -282,20 +285,20 @@ GET /medcl/_analyze
                 }
             }
         }
-    }
-    GET /medcl/folks/_search
+    }'
+    curl -XGET http://127.0.0.1:9200/medcl/folks/_search -H 'Content-Type:application/json' -d '
     {
       "query": {"match_phrase": {
         "name.pinyin": "刘德华"
       }}
-    }
+    }'
 
     </pre>
 
 - option 2
     <pre>
 
-    PUT /medcl/
+    curl -XPUT http://127.0.0.1:9200/medcl/ -H 'Content-Type:application/json' -d '
     {
         "index" : {
             "analysis" : {
@@ -317,31 +320,33 @@ GET /medcl/_analyze
                 }
             }
         }
-    }
+    }'
 
-    POST /medcl/folks/andy
-    {"name":"刘德华"}
+    curl -XPOST http://127.0.0.1:9200/medcl/folks/andy -H 'Content-Type:application/json' -d '
+    {
+        "name":"刘德华"
+    }'
 
-    GET /medcl/folks/_search
+    curl -XGET http://127.0.0.1:9200/medcl/folks/_search -H 'Content-Type:application/json' -d '
     {
       "query": {"match_phrase": {
         "name.pinyin": "刘德h"
       }}
-    }
+    }'
 
-    GET /medcl/folks/_search
+    curl -XGET http://127.0.0.1:9200/medcl/folks/_search -H 'Content-Type:application/json' -d '
     {
       "query": {"match_phrase": {
         "name.pinyin": "刘dh"
       }}
-    }
+    }'
 
-    GET /medcl/folks/_search
+    curl -XGET http://127.0.0.1:9200/medcl/folks/_search -H 'Content-Type:application/json' -d '
     {
       "query": {"match_phrase": {
         "name.pinyin": "dh"
       }}
-    }
+    }'
 
     </pre>
 
