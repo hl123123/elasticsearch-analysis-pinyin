@@ -164,7 +164,7 @@ curl -XPOST http://127.0.0.1:9200/medcl/folks/_mapping -H 'Content-Type:applicat
 
 4.Indexing
 <pre>
-POST /medcl/folks/andy -H 'Content-Type:application/json' -d '
+curl -XPOST  http://127.0.0.1:9200/medcl/folks/andy -H 'Content-Type:application/json' -d '
 {
     "name":"刘德华"
 }'
